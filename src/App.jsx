@@ -4,9 +4,13 @@ import { useMediaQuery } from '@custom-react-hooks/use-media-query';
 import Header from './components/Header';
 import WelcomePage from './components/WelcomePage';
 import WelcomePoll from './components/WelcomePoll';
+import MenuPage from './components/MenuPage';
+import CreateAccountPage from './components/CreateAccountPage';
 function App() {
   const [isChecked, setIsChecked] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isMenuPageOpen, setIsMenuPageOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState("welcome");
   
   // DESIGN 
   // backgrounds
@@ -16,19 +20,50 @@ function App() {
   const titleStyle="font-['Chewy'] text-center text-[36px] text-sky-900"
   
   // buttons
-  const btnStyle="px-6 py-2 w-full border-2 border-sky-800 rounded-lg text-sky-800 font-[Poppins] tracking-wider font-medium cursor-pointer hover:bg-sky-800 hover:border-pink-300 hover:text-white" 
+  const btnStyle = "px-6 py-2 w-full border-2 border-sky-800 rounded-lg text-sky-800 font-[Poppins] tracking-wider font-medium cursor-pointer hover:bg-sky-800 hover:border-pink-300 hover:text-white" 
+  
+  // Containers
+  const containerStyle=
+    "relative w-full max-w-md max-h-[90vh] overflow-y-auto transform transition-all bg-white px-5 py-6 sm:px-8 sm:py-8 rounded-2xl shadow-[inset_0_0_10px_rgba(79,70,230,0.5)]"
   // MEDIA QUERRY
   const isMobile = useMediaQuery('(max-width:376px)');
-  const isTablet=useMediaQuery('(min-width:768px')
+  const isTablet = useMediaQuery('(min-width:768px)');
  const isLaptop=useMediaQuery('(min-width:1024px)')
 
   return (
     <>
       <section className={`${bgStyle} z-10 min-h-dvh  w-full bg-cover bg-center bg-no-repeat  ${isMobile ?"px-10 py-8":"px-20 py-20"} lg:px-30 lg:py-30`}>
+        
+        {/* Header */}
         <Header isMobile={isMobile} />
-        {/* <WelcomePage titleStyle={titleStyle}/> */}
        
-        {isModalOpen ? <WelcomePoll isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} pollTitles={pollTitles} isChecked={isChecked} setIsChecked={setIsChecked} /> : <WelcomePage titleStyle={titleStyle} setIsModalOpen={setIsModalOpen} btnStyle={btnStyle} isLaptop={isLaptop} isTablet={isTablet } />}        
+
+        {/* Welcome page */}
+        {currentPage === "welcome" &&
+          <WelcomePage titleStyle={titleStyle}
+            btnStyle={btnStyle}
+            isLaptop={isLaptop}
+          isTablet={isTablet}
+       setCurrentPage={setCurrentPage}
+          
+          />}
+        
+       {/* Menu Page */}
+        {currentPage === "signIn" &&
+          <MenuPage />}
+        
+        {/* Create account page */}
+        {currentPage === "newAccount" && <CreateAccountPage containerStyle={containerStyle} pollTitles={ pollTitles} />}
+
+        {/* Modal Page */}
+
+        {currentPage === "modal" && <WelcomePoll containerStyle={containerStyle} currentPage={ currentPage} setCurrentPage={setCurrentPage} />}
+        
+
+       
+       
+
+        
       </section>
     
     </>

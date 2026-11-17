@@ -4,9 +4,9 @@ import SignInForm from "./SignInForm";
 const WelcomePage = ({
   titleStyle,
   btnStyle,
-  setIsModalOpen,
   isTablet,
   isLaptop,
+  setCurrentPage,
 }) => {
   const [openSignInForm, setOpenSignInForm] = useState(false);
   const [isBtnContainerOpen, setIsBtnContainerOpen] = useState(true);
@@ -37,7 +37,10 @@ const WelcomePage = ({
         {/* Btns Container */}
         {isBtnContainerOpen ? (
           <div className="flex items-center justify-between gap-4 my-10 ">
-            <button onClick={() => setIsModalOpen(true)} className={btnStyle}>
+            <button
+              onClick={() => setCurrentPage("modal")}
+              className={btnStyle}
+            >
               Try one
             </button>
             <button onClick={() => handleOpenSignInForm()} className={btnStyle}>
@@ -57,7 +60,9 @@ const WelcomePage = ({
 
       {/*Sign in container display  */}
 
-      {openSignInForm ? <SignInForm btnStyle={btnStyle} /> : null}
+      {openSignInForm ? (
+        <SignInForm btnStyle={btnStyle} setCurrentPage={setCurrentPage} />
+      ) : null}
     </div>
   );
 };

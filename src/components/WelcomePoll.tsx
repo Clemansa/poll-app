@@ -10,11 +10,12 @@ const welcomePoll = [
 ];
 
 const WelcomePoll = ({
-  isModalOpen,
-  setIsModalOpen,
+  setCurrentPage,
+  currentPage,
   isChecked,
   setIsChecked,
   pollTitles,
+  containerStyle,
 }) => {
   const [votes, setVotes] = useState({
     Comedy: 0,
@@ -38,10 +39,10 @@ const WelcomePoll = ({
       // If they have already voted in the past, we automatically close the modal.
       // setIsModalOpen(false);
     }
-  }, [setIsModalOpen]);
+  }, [setCurrentPage]);
 
   //If the modal is closed, we don't render anything (this way, the welcome page behind it will be visible)
-  if (!isModalOpen) return null;
+  if (!currentPage) return null;
 
   // 2. The function that records the vote
   const handleVote = (e) => {
@@ -68,15 +69,15 @@ const WelcomePoll = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
       {/* Overlay background */}
       <div
-        onClick={() => setIsModalOpen(false)}
+        onClick={() => setCurrentPage("welcome")}
         className="absolute inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"
       ></div>
 
       {/* Modal Card - Responsive (full width on mobile, max-width: md on larger screens) */}
-      <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto transform transition-all bg-white px-5 py-6 sm:px-8 sm:py-8 rounded-2xl shadow-[inset_0_0_10px_rgba(79,70,230,0.5)]">
+      <div className={containerStyle}>
         {/* Modal close button */}
         <button
-          onClick={() => setIsModalOpen(false)}
+          onClick={() => setCurrentPage("welcome")}
           aria-label="Close modal"
           className="absolute top-4 right-4 p-2 text-sky-700 hover:text-pink-600 hover:bg-pink-50 rounded-full transition-all duration-200 cursor-pointer"
         >
