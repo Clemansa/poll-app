@@ -7,6 +7,9 @@ const WelcomePage = ({
   isTablet,
   isLaptop,
   setCurrentPage,
+  input,
+  numbers,
+  specialCharacters,
 }) => {
   const [openSignInForm, setOpenSignInForm] = useState(false);
   const [isBtnContainerOpen, setIsBtnContainerOpen] = useState(true);
@@ -61,7 +64,13 @@ const WelcomePage = ({
       {/*Sign in container display  */}
 
       {openSignInForm ? (
-        <SignInForm btnStyle={btnStyle} setCurrentPage={setCurrentPage} />
+        <SignInForm
+          input={input}
+          btnStyle={btnStyle}
+          setCurrentPage={setCurrentPage}
+          numbers={numbers}
+          specialCharacters={specialCharacters}
+        />
       ) : null}
     </div>
   );

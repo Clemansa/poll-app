@@ -1,20 +1,24 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 
-const specialCharacters = ["!", "#", "$", "%", "^", "&", "*", "(", ")"];
-const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-
-const SignInForm = ({ btnStyle, setCurrentPage }) => {
+const SignInForm = ({
+  btnStyle,
+  setCurrentPage,
+  input,
+  numbers,
+  specialCharacters,
+}) => {
   const [error, setError] = useState({});
-  //styling
+  const [serverError, setServerError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const input =
-    "w-full px-4 py-2 bg-white/60 rounded-lg border border-sky-800 inset-shadow-sm inset-shadow-indigo-400 focus:inset-shadow-none focus:border-2 focus:border-sky-800 outline-none";
+  // Styling
+
   const errorStyle =
-    "text-red-500 text-[12px] font-bold text-[Poppins] tracking-wider";
-  // functions
+    "text-red-500 text-[12px] font-bold font-[Poppins] tracking-wider";
+
+  // Validation
   const validateUsername = (username) => {
-    if (username.length === 0) {
+    if (!username || username.trim().length === 0) {
       setError((prev) => ({ ...prev, username: "This field is required!" }));
       return false;
     }
@@ -23,7 +27,7 @@ const SignInForm = ({ btnStyle, setCurrentPage }) => {
   };
 
   const validatePassword = (password) => {
-    if (password.length === 0) {
+    if (!password || password.length === 0) {
       setError((prev) => ({ ...prev, password: "This field is required!" }));
       return false;
     }
@@ -45,25 +49,66 @@ const SignInForm = ({ btnStyle, setCurrentPage }) => {
       setError((prev) => ({
         ...prev,
         password:
-          "Password must contain at least one number and one special characters! ",
+          "Password must contain at least one number and one special character!",
       }));
       return false;
     }
+
     setError((prev) => ({ ...prev, password: "" }));
     return true;
   };
 
-  const handleSignIn = (e) => {
+  // Sending dates to the  Backend
+  const handleSignIn = async (e) => {
     e.preventDefault();
-    const data = new FormData(e.target);
+    setServerError(""); // reset previous errors from server
 
+    const data = new FormData(e.target);
     const username = data.get("username");
     const password = data.get("password");
 
-    if (!validateUsername(username) || !validatePassword(password)) {
-      return false;
+    // check both validations before stopping execution
+    const isUsernameValid = validateUsername(username);
+    const isPasswordValid = validatePassword(password);
+
+    if (!isUsernameValid || !isPasswordValid) {
+      return;
     }
-    setCurrentPage("signIn");
+
+    setIsLoading(true);
+
+    try {
+      // Înlocuiește URL-ul cu endpoint-ul real al backend-ului tău
+      const response = await fetch("http://localhost:5000/api/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username.trim(),
+          password: password,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        // We throw the error received from the backend (e.g., Invalid credentials)
+        throw new Error(result.message || "Autentificarea a eșuat!");
+      }
+
+      // Optional: Save the JWT token or user data to localStorage
+      if (result.token) {
+        localStorage.setItem("token", result.token);
+      }
+
+      // Redirect the user upon success
+      setCurrentPage("signIn");
+    } catch (err) {
+      setServerError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -75,26 +120,34 @@ const SignInForm = ({ btnStyle, setCurrentPage }) => {
             name="username"
             placeholder="Username"
             className={input}
-          ></input>
+            disabled={isLoading}
+          />
         </label>
         {error.username ? <p className={errorStyle}>{error.username}</p> : null}
+
         <label>
           <input
             type="password"
             name="password"
             placeholder="Password"
             className={input}
-          ></input>
+            disabled={isLoading}
+          />
         </label>
         {error.password ? <p className={errorStyle}>{error.password}</p> : null}
-        <button type="submit" className={btnStyle}>
-          Sign In
+
+        {/* Display error received from the backend */}
+        {serverError ? <p className={errorStyle}>{serverError}</p> : null}
+
+        <button type="submit" className={btnStyle} disabled={isLoading}>
+          {isLoading ? "Signing In..." : "Sign In"}
         </button>
       </form>
 
       <p className="font-[Poppins] text-[14px] text-sky-700 mt-3 tracking-wider">
         Create your account right
         <button
+          type="button"
           onClick={() => setCurrentPage("newAccount")}
           className="underline font-bold pl-2"
         >
@@ -106,5 +159,3 @@ const SignInForm = ({ btnStyle, setCurrentPage }) => {
 };
 
 export default SignInForm;
-
-// SALVARE DATE USER IN BACKEND

@@ -6,11 +6,15 @@ import WelcomePage from './components/WelcomePage';
 import WelcomePoll from './components/WelcomePoll';
 import MenuPage from './components/MenuPage';
 import CreateAccountPage from './components/CreateAccountPage';
+
 function App() {
-  const [isChecked, setIsChecked] = useState(false);
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [isMenuPageOpen, setIsMenuPageOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState("welcome");
+
+  // special characters 
+  
+const specialCharacters = ["!", "#", "$", "%", "^", "&", "*", "(", ")"];
+const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+
   
   // DESIGN 
   // backgrounds
@@ -19,6 +23,9 @@ function App() {
   const pollTitles="font-['Chewy'] text-left text-[32px] text-sky-800"
   const titleStyle="font-['Chewy'] text-center text-[36px] text-sky-900"
   
+  // inputs
+  const input =
+    "w-full px-4 py-2 bg-white/60 rounded-lg border border-sky-800 inset-shadow-sm inset-shadow-indigo-400 focus:inset-shadow-none focus:border-2 focus:border-sky-800 outline-none";
   // buttons
   const btnStyle = "px-6 py-2 w-full border-2 border-sky-800 rounded-lg text-sky-800 font-[Poppins] tracking-wider font-medium cursor-pointer hover:bg-sky-800 hover:border-pink-300 hover:text-white" 
   
@@ -44,7 +51,10 @@ function App() {
             btnStyle={btnStyle}
             isLaptop={isLaptop}
           isTablet={isTablet}
-       setCurrentPage={setCurrentPage}
+          setCurrentPage={setCurrentPage}
+          input={input}
+          specialCharacters={specialCharacters}
+          numbers={numbers}
           
           />}
         
@@ -53,7 +63,7 @@ function App() {
           <MenuPage />}
         
         {/* Create account page */}
-        {currentPage === "newAccount" && <CreateAccountPage containerStyle={containerStyle} pollTitles={ pollTitles} />}
+        {currentPage === "newAccount" && <CreateAccountPage setCurrentPage={set} containerStyle={containerStyle} pollTitles={pollTitles} input={ input} numbers={numbers} specialCharacters={specialCharacters} />}
 
         {/* Modal Page */}
 

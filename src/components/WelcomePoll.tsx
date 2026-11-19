@@ -190,7 +190,7 @@ const WelcomePoll = ({
             })}
 
             <button
-              onClick={() => setIsModalOpen(false)}
+              onClick={() => setCurrentPage("welcome")}
               className="w-full py-3 px-6 mt-6 text-white font-bold bg-sky-700 rounded-xl hover:bg-pink-500 transition-all duration-300 cursor-pointer"
             >
               Continue to Welcome Page
